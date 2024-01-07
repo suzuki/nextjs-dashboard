@@ -73,5 +73,31 @@ export const schema = new Schema({
         return ['span', { style: `color: ${color}` }, 0];
       }
     },
+    size: {
+      attrs: {
+        fontSize: {},
+      },
+      parseDOM: [
+        {
+          tag: 'span',
+          getAttrs: (dom: string | HTMLElement) => {
+            if (typeof dom === 'string') {
+              return false;
+            }
+            const { fontSize } = dom.style;
+            if (!fontSize) {
+              return false;
+            }
+
+            return { fontSize };
+          },
+        }
+      ],
+      toDOM(mark) {
+        const { fontSize } = mark.attrs;
+
+        return ['span', { style: `font-size: ${fontSize}` }, 0];
+      }
+    },
   },
 });

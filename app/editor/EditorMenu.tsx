@@ -6,6 +6,7 @@ import { toggleMark } from 'prosemirror-commands';
 import { MenuItemColor } from './EditorItemColor';
 import { addMark } from './addMark';
 import { removeMark } from './removeMark';
+import { MenuItemFontSize } from './MenuItemFontSize';
 
 
 export type EditorMenuProos = {
@@ -88,6 +89,28 @@ export const EditorMenu: FC<EditorMenuProos> = (props) => {
         }}
         onResetColor={() => {
           removeMark(schema.marks.color)(
+            props.editorView.state,
+            props.editorView.dispatch,
+            props.editorView
+          );
+          props.editorView.focus();
+        }}
+      />
+
+      {/* FONT_SIZE */}
+      <MenuItemFontSize
+        editorState={props.editorView.state}
+        onSetFontSize={(fontSize) => {
+          addMark(schema.marks.size, { fontSize })(
+            props.editorView.state,
+            props.editorView.dispatch,
+            props.editorView
+          );
+
+          props.editorView.focus();
+        }}
+        onResetFontSize={() => {
+          removeMark(schema.marks.size)(
             props.editorView.state,
             props.editorView.dispatch,
             props.editorView
