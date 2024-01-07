@@ -8,9 +8,30 @@ export const schema = new Schema({
     paragraph: {
       content: 'inline*',
       group: 'block',
-      parseDOM: [{ tag: 'p' }],
-      toDOM() {
-        return ['p', 0];
+      attrs: {
+        align: { default: 'left' },
+      },
+      parseDOM: [
+        {
+          tag: 'p',
+          getAttrs(dom) {
+            if (typeof dom === 'string') {
+              return false;
+            }
+
+            return {
+              align: dom.style.textAlign || 'left',
+            }
+          },
+        },
+      ],
+      toDOM(node) {
+        const { align } = node.attrs;
+        if (!align || align === 'left') {
+          return ['p', 0];
+        }
+
+        return ['p', { style: `text-align: ${align}` }, 0];
       }
     },
     text: {

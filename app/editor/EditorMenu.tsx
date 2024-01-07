@@ -2,11 +2,12 @@ import { FC } from 'react';
 import { EditorView } from "prosemirror-view"
 import { isActiveMark } from './isActiveMark';
 import { schema } from './schema';
-import { toggleMark } from 'prosemirror-commands';
+import { setBlockType, toggleMark } from 'prosemirror-commands';
 import { MenuItemColor } from './EditorItemColor';
 import { addMark } from './addMark';
 import { removeMark } from './removeMark';
 import { MenuItemFontSize } from './MenuItemFontSize';
+import { MenuItemTextAlign } from './MenuItemTextAlign';
 
 
 export type EditorMenuProos = {
@@ -111,6 +112,19 @@ export const EditorMenu: FC<EditorMenuProos> = (props) => {
         }}
         onResetFontSize={() => {
           removeMark(schema.marks.size)(
+            props.editorView.state,
+            props.editorView.dispatch,
+            props.editorView
+          );
+          props.editorView.focus();
+        }}
+      />
+
+      {/* TEXT ALING */}
+      <MenuItemTextAlign
+        editorState={props.editorView.state}
+        onSetTextAlign={(align) => {
+          setBlockType(schema.nodes.paragraph, { align })(
             props.editorView.state,
             props.editorView.dispatch,
             props.editorView
