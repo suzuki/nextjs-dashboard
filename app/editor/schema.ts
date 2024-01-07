@@ -120,5 +120,30 @@ export const schema = new Schema({
         return ['span', { style: `font-size: ${fontSize}` }, 0];
       }
     },
+    link: {
+      attrs: {
+        href: {},
+        title: { default: null },
+      },
+      inclusive: false,
+      parseDOM: [
+        {
+          tag: 'a[href]',
+          getAttrs(dom: string | HTMLElement) {
+            if (typeof dom === 'string') {
+              return false;
+            }
+            return {
+              href: dom.getAttribute('href'),
+              title: dom.getAttribute('title'),
+            }
+          },
+        },
+      ],
+      toDOM(mark) {
+        let { href, title } = mark.attrs;
+        return ['a', { href, title, target: '_blank' }, 0];
+      },
+    },
   },
 });

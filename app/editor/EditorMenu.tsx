@@ -8,6 +8,7 @@ import { addMark } from './addMark';
 import { removeMark } from './removeMark';
 import { MenuItemFontSize } from './MenuItemFontSize';
 import { MenuItemTextAlign } from './MenuItemTextAlign';
+import { MenuItemLink } from './EditorItemLink';
 
 
 export type EditorMenuProos = {
@@ -125,6 +126,19 @@ export const EditorMenu: FC<EditorMenuProos> = (props) => {
         editorState={props.editorView.state}
         onSetTextAlign={(align) => {
           setBlockType(schema.nodes.paragraph, { align })(
+            props.editorView.state,
+            props.editorView.dispatch,
+            props.editorView
+          );
+          props.editorView.focus();
+        }}
+      />
+
+      {/* Link */}
+      <MenuItemLink
+        editorState={props.editorView.state}
+        onSetLink={(url) => {
+          addMark(schema.marks.link, { href: url })(
             props.editorView.state,
             props.editorView.dispatch,
             props.editorView
