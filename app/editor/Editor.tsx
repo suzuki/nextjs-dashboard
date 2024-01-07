@@ -6,6 +6,7 @@ import { keymap } from 'prosemirror-keymap';
 import { baseKeymap, toggleMark } from 'prosemirror-commands';
 import { EditorView } from "prosemirror-view";
 import { schema } from './schema';
+import { EditorMenu } from "./EditorMenu";
 
 const createDoc = <T extends Schema>(html: string, pmSchema: T) => {
   const element = document.createElement('div');
@@ -31,6 +32,11 @@ const createPmState = <T extends Schema>(
       keymap({
         Enter: baseKeymap['Enter'],
         Backspace: baseKeymap['Backspace'],
+      }),
+      keymap({
+        "Mod-b": toggleMark(pmSchema.marks.strong),
+        "Mod-i": toggleMark(pmSchema.marks.em),
+        "Mod-u": toggleMark(pmSchema.marks.underline),
       }),
     ]
   });
@@ -68,9 +74,21 @@ export const Editor: FC<Props> = (props) => {
     };
   }, []);
 
+  const css =`
+    .ProseMirror {
+      height: 100%;
+    }
+  `;
+
   return (
     <div>
-      <div ref={elContentRef} />
+      {editorViewRef.current && (
+        <EditorMenu editorView={editorViewRef.current} />
+      )}
+      <div
+        className="h-full min-h-[100px] block p-2.5 w-full text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+        ref={elContentRef}
+      />
     </div>
   );
 };
