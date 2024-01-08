@@ -1,18 +1,27 @@
 import { useEffect, useRef, useReducer, FC } from "react";
 import { Schema, Node, DOMParser } from "prosemirror-model";
-import { EditorState } from "prosemirror-state";
+import { EditorState, Plugin } from "prosemirror-state";
 import { history, redo, undo } from 'prosemirror-history';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap, toggleMark } from 'prosemirror-commands';
 import { EditorView } from "prosemirror-view";
 import { schema } from './schema';
 import { EditorMenu } from "./EditorMenu";
+import { SelectionLinkTooltipView } from "./SelectionLinkTooltipView";
 
 const createDoc = <T extends Schema>(html: string, pmSchema: T) => {
   const element = document.createElement('div');
   element.innerHTML = html;
 
   return DOMParser.fromSchema(pmSchema).parse(element);
+};
+
+const selectionLinkTooltipPlugin = () => {
+  return new Plugin({
+    view(editorView) {
+      return new SelectionLinkTooltipView(editorView);
+    }
+  });
 };
 
 const createPmState = <T extends Schema>(
@@ -38,6 +47,7 @@ const createPmState = <T extends Schema>(
         "Mod-i": toggleMark(pmSchema.marks.em),
         "Mod-u": toggleMark(pmSchema.marks.underline),
       }),
+      selectionLinkTooltipPlugin(),
     ]
   });
 };
